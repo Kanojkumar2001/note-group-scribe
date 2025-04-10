@@ -33,10 +33,6 @@ const NoteActions: React.FC<NoteActionProps> = ({ note, onEdit, onDelete }) => {
 
     onEdit(note.id, editedContent);
     setIsEditing(false);
-    toast({
-      title: "Success",
-      description: "Note updated successfully",
-    });
   };
 
   const handleCancel = () => {
@@ -46,10 +42,6 @@ const NoteActions: React.FC<NoteActionProps> = ({ note, onEdit, onDelete }) => {
 
   const handleDelete = () => {
     onDelete(note.id);
-    toast({
-      title: "Success",
-      description: "Note deleted successfully",
-    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

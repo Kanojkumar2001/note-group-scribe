@@ -5,8 +5,9 @@ import GroupModal from "./GroupModal";
 import NoteContent from "./NoteContent";
 import NoteInput from "./NoteInput";
 import { Group, Note } from "../types";
-import { getGroups, getGroupNotes } from "../utils/storage";
+import { getGroups, getGroupNotes, deleteGroup } from "../utils/storage";
 import { Toaster } from "./ui/toaster";
+import { toast } from "@/hooks/use-toast";
 
 const NoteApp = () => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -88,6 +89,31 @@ const NoteApp = () => {
     setActiveGroupId(group.id);
   };
 
+  // Handle group deleted
+  const handleGroupDeleted = (groupId: string) => {
+    const success = deleteGroup(groupId);
+    
+    if (success) {
+      // Update groups list
+      const updatedGroups = groups.filter(group => group.id !== groupId);
+      setGroups(updatedGroups);
+      
+      // If the active group was deleted, select another group or set to null
+      if (activeGroupId === groupId) {
+        if (updatedGroups.length > 0) {
+          setActiveGroupId(updatedGroups[0].id);
+        } else {
+          setActiveGroupId(null);
+        }
+      }
+      
+      toast({
+        title: "Success",
+        description: "Group deleted successfully",
+      });
+    }
+  };
+
   // Handle new note added
   const handleNoteAdded = (note: Note) => {
     setNotes([note, ...notes]);
@@ -145,6 +171,7 @@ const NoteApp = () => {
           activeGroupId={activeGroupId}
           onGroupSelect={handleGroupSelect}
           onCreateGroup={() => setShowGroupModal(true)}
+          onDeleteGroup={handleGroupDeleted}
         />
       )}
       

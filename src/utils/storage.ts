@@ -30,6 +30,42 @@ export const addGroup = (group: Group): boolean => {
   return true;
 };
 
+// Delete a group
+export const deleteGroup = (groupId: string): boolean => {
+  try {
+    // Get groups and filter out the one to delete
+    const groups = getGroups();
+    const filteredGroups = groups.filter(group => group.id !== groupId);
+    
+    if (filteredGroups.length === groups.length) {
+      toast({
+        title: "Error",
+        description: "Group not found",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    // Delete all notes associated with the group
+    const notes = getNotes();
+    const filteredNotes = notes.filter(note => note.groupId !== groupId);
+    
+    // Save updated groups and notes
+    saveGroups(filteredGroups);
+    saveNotes(filteredNotes);
+    
+    return true;
+  } catch (error) {
+    console.error("Error deleting group:", error);
+    toast({
+      title: "Error",
+      description: "Failed to delete group",
+      variant: "destructive"
+    });
+    return false;
+  }
+};
+
 // Get all notes from localStorage
 export const getNotes = (): Note[] => {
   const notes = localStorage.getItem(NOTES_KEY);

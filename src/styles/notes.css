@@ -75,3 +75,40 @@
 .notes-edit-save {
   color: hsl(var(--notes-accent));
 }
+
+/* Group delete button styling */
+.notes-group-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.group-delete-btn {
+  position: absolute;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  opacity: 0;
+  color: hsl(var(--notes-dark-text));
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notes-group-item:hover .group-delete-btn {
+  opacity: 0.7;
+}
+
+.group-delete-btn:hover {
+  opacity: 1 !important;
+  background-color: rgba(0, 0, 0, 0.05);
+  color: hsl(var(--destructive));
+}
