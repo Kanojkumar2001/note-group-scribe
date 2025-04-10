@@ -62,6 +62,7 @@ const NoteActions: React.FC<NoteActionProps> = ({ note, onEdit, onDelete }) => {
           onKeyDown={handleKeyDown}
           className="notes-edit-textarea"
           autoFocus
+          placeholder="Enter your note content..."
         />
         <div className="notes-edit-actions">
           <Button
@@ -71,7 +72,7 @@ const NoteActions: React.FC<NoteActionProps> = ({ note, onEdit, onDelete }) => {
             className="notes-edit-cancel"
             aria-label="Cancel editing"
           >
-            <X size={18} />
+            <X size={18} /> Cancel
           </Button>
           <Button
             variant="ghost"
@@ -81,7 +82,7 @@ const NoteActions: React.FC<NoteActionProps> = ({ note, onEdit, onDelete }) => {
             aria-label="Save note"
             disabled={editedContent.trim() === ""}
           >
-            <Save size={18} />
+            <Save size={18} /> Save
           </Button>
         </div>
       </div>
@@ -89,7 +90,7 @@ const NoteActions: React.FC<NoteActionProps> = ({ note, onEdit, onDelete }) => {
   }
 
   return (
-    <div className="notes-item-actions">
+    <div className="notes-item-actions" onClick={(e) => e.stopPropagation()}>
       <Button
         variant="ghost"
         size="sm"

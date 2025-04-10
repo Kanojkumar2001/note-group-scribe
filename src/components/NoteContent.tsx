@@ -42,6 +42,7 @@ const NoteContent = ({ notes, groupName, onNoteEdited, onNoteDeleted }: NoteCont
     const success = editNote(noteId, content);
     if (success) {
       onNoteEdited(noteId, content);
+      setSelectedNoteId(null); // Deselect note after editing
       toast({
         title: "Success",
         description: "Note updated successfully",
@@ -54,6 +55,7 @@ const NoteContent = ({ notes, groupName, onNoteEdited, onNoteDeleted }: NoteCont
     const success = deleteNote(noteId);
     if (success) {
       onNoteDeleted(noteId);
+      setSelectedNoteId(null); // Reset selection after deletion
       toast({
         title: "Success",
         description: "Note deleted successfully",
@@ -128,13 +130,12 @@ const NoteContent = ({ notes, groupName, onNoteEdited, onNoteDeleted }: NoteCont
               <div className="notes-item-content">{note.content}</div>
               <div className="notes-item-footer">
                 <div className="notes-item-date">{formatDate(note.updatedAt)}</div>
-                {selectedNoteId === note.id && (
-                  <NoteActions
-                    note={note}
-                    onEdit={handleNoteEdit}
-                    onDelete={handleNoteDelete}
-                  />
-                )}
+                {/* Always show actions for better discoverability, but highlight when selected */}
+                <NoteActions
+                  note={note}
+                  onEdit={handleNoteEdit}
+                  onDelete={handleNoteDelete}
+                />
               </div>
             </div>
           ))

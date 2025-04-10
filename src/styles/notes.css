@@ -24,22 +24,21 @@
 .notes-item-actions {
   display: flex;
   gap: 8px;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
+  opacity: 1; /* Changed from 0.8 to make actions more visible */
 }
 
-.notes-item-actions:hover {
-  opacity: 1;
-}
-
+/* Remove hover opacity change to ensure actions are always visible */
 .notes-action-btn {
-  padding: 4px;
+  padding: 6px; /* Increased padding for better touch target */
   border-radius: 4px;
   color: hsl(var(--notes-dark-text));
+  background-color: rgba(0, 0, 0, 0.03); /* Added light background */
+  transition: all 0.2s ease;
 }
 
 .notes-action-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.08); /* Darker on hover */
+  transform: scale(1.05); /* Slight scale effect on hover */
 }
 
 .notes-delete-btn:hover {
@@ -95,7 +94,7 @@
   width: 28px;
   height: 28px;
   border-radius: 4px;
-  opacity: 0;
+  opacity: 0.7; /* Increased from 0 for better visibility */
   color: hsl(var(--notes-dark-text));
   background: transparent;
   border: none;
@@ -104,7 +103,8 @@
 }
 
 .notes-group-item:hover .group-delete-btn {
-  opacity: 0.7;
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .group-delete-btn:hover {
