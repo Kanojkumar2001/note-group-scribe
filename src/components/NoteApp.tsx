@@ -12,11 +12,29 @@ const NoteApp = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
   const [showGroupModal, setShowGroupModal] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(true);
 
-  // Get active group name
-  const activeGroupName = activeGroupId 
-    ? groups.find(g => g.id === activeGroupId)?.name || null
+  // Get active group details
+  const activeGroup = activeGroupId 
+    ? groups.find(g => g.id === activeGroupId)
     : null;
+  
+  const activeGroupName = activeGroup?.name || null;
+  const activeGroupColor = activeGroup?.color || null;
+
+  // Check for mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      const isMobile = window.innerWidth < 768;
+      setIsMobileView(isMobile);
+      setShowSidebar(!isMobile || !activeGroupId);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [activeGroupId]);
 
   // Load groups from storage on mount
   useEffect(() => {
@@ -33,15 +51,30 @@ const NoteApp = () => {
   useEffect(() => {
     if (activeGroupId) {
       const groupNotes = getGroupNotes(activeGroupId);
+      
+      // Add group color to each note if not already present
+      const enrichedNotes = groupNotes.map(note => {
+        if (!note.groupColor && activeGroup) {
+          return {...note, groupColor: activeGroup.color};
+        }
+        return note;
+      });
+      
       // Sort notes by updatedAt in descending order (newest first)
-      const sortedNotes = [...groupNotes].sort(
+      const sortedNotes = [...enrichedNotes].sort(
         (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
       );
+      
       setNotes(sortedNotes);
+      
+      // On mobile, hide sidebar when group is selected
+      if (isMobileView) {
+        setShowSidebar(false);
+      }
     } else {
       setNotes([]);
     }
-  }, [activeGroupId]);
+  }, [activeGroupId, activeGroup, isMobileView]);
 
   // Handle group selection
   const handleGroupSelect = (groupId: string) => {
@@ -59,26 +92,53 @@ const NoteApp = () => {
     setNotes([note, ...notes]);
   };
 
+  // Toggle sidebar in mobile view
+  const toggleSidebar = () => {
+    setShowSidebar(!showSidebar);
+  };
+
+  // Back button handler for mobile
+  const handleBackToGroups = () => {
+    if (isMobileView) {
+      setShowSidebar(true);
+    }
+  };
+
   return (
     <div className="notes-app">
-      <GroupList
-        groups={groups}
-        activeGroupId={activeGroupId}
-        onGroupSelect={handleGroupSelect}
-        onCreateGroup={() => setShowGroupModal(true)}
-      />
+      {/* Mobile back button */}
+      {isMobileView && activeGroupId && !showSidebar && (
+        <button className="notes-mobile-back" onClick={handleBackToGroups}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+      )}
       
+      {/* Sidebar / Group List */}
+      {showSidebar && (
+        <GroupList
+          groups={groups}
+          activeGroupId={activeGroupId}
+          onGroupSelect={handleGroupSelect}
+          onCreateGroup={() => setShowGroupModal(true)}
+        />
+      )}
+      
+      {/* Main Content */}
       <div className="notes-main">
         <NoteContent 
           notes={notes} 
-          groupName={activeGroupName} 
+          groupName={activeGroupName}
         />
         <NoteInput 
-          groupId={activeGroupId} 
+          groupId={activeGroupId}
+          groupColor={activeGroupColor} 
           onNoteAdded={handleNoteAdded} 
         />
       </div>
       
+      {/* Create Group Modal */}
       <GroupModal
         isOpen={showGroupModal}
         onClose={() => setShowGroupModal(false)}

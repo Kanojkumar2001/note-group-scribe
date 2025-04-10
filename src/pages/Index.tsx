@@ -3,7 +3,7 @@ import NoteApp from "../components/NoteApp";
 
 const Index = () => {
   return (
-    <div className="min-h-screen w-full">
+    <div className="h-screen w-full overflow-hidden">
       <NoteApp />
     </div>
   );

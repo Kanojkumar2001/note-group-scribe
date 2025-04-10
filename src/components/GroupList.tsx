@@ -32,21 +32,28 @@ const GroupList = ({
       </div>
       
       <div className="notes-group-list">
-        {groups.map((group) => (
-          <div
-            key={group.id}
-            className={`notes-group-item ${activeGroupId === group.id ? 'active' : ''}`}
-            onClick={() => onGroupSelect(group.id)}
-          >
-            <div 
-              className="notes-group-avatar" 
-              style={{ backgroundColor: group.color, color: 'white' }}
-            >
-              {getInitials(group.name)}
-            </div>
-            <div>{group.name}</div>
+        {groups.length === 0 ? (
+          <div className="notes-empty-groups">
+            <p>No groups yet</p>
+            <p>Create your first notes group!</p>
           </div>
-        ))}
+        ) : (
+          groups.map((group) => (
+            <div
+              key={group.id}
+              className={`notes-group-item ${activeGroupId === group.id ? 'active' : ''}`}
+              onClick={() => onGroupSelect(group.id)}
+            >
+              <div 
+                className="notes-group-avatar" 
+                style={{ backgroundColor: group.color }}
+              >
+                {getInitials(group.name)}
+              </div>
+              <div className="notes-group-name">{group.name}</div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
