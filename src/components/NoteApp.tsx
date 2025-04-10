@@ -6,6 +6,7 @@ import NoteContent from "./NoteContent";
 import NoteInput from "./NoteInput";
 import { Group, Note } from "../types";
 import { getGroups, getGroupNotes } from "../utils/storage";
+import { Toaster } from "./ui/toaster";
 
 const NoteApp = () => {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -92,6 +93,28 @@ const NoteApp = () => {
     setNotes([note, ...notes]);
   };
 
+  // Handle note edited
+  const handleNoteEdited = (noteId: string, content: string) => {
+    const updatedNotes = notes.map(note => 
+      note.id === noteId 
+        ? { ...note, content, updatedAt: new Date().toISOString() } 
+        : note
+    );
+    
+    // Sort notes by updatedAt in descending order (newest first)
+    const sortedNotes = [...updatedNotes].sort(
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+    
+    setNotes(sortedNotes);
+  };
+
+  // Handle note deleted
+  const handleNoteDeleted = (noteId: string) => {
+    const updatedNotes = notes.filter(note => note.id !== noteId);
+    setNotes(updatedNotes);
+  };
+
   // Toggle sidebar in mobile view
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -130,6 +153,8 @@ const NoteApp = () => {
         <NoteContent 
           notes={notes} 
           groupName={activeGroupName}
+          onNoteEdited={handleNoteEdited}
+          onNoteDeleted={handleNoteDeleted}
         />
         <NoteInput 
           groupId={activeGroupId}
@@ -144,6 +169,9 @@ const NoteApp = () => {
         onClose={() => setShowGroupModal(false)}
         onGroupAdded={handleGroupAdded}
       />
+      
+      {/* Toast notifications */}
+      <Toaster />
     </div>
   );
 };

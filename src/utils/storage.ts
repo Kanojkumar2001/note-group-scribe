@@ -1,5 +1,6 @@
 
 import { Group, Note } from "../types";
+import { toast } from "@/hooks/use-toast";
 
 // Storage keys
 const GROUPS_KEY = "notes_app_groups";
@@ -50,6 +51,70 @@ export const getGroupNotes = (groupId: string): Note[] => {
 export const addNote = (note: Note): void => {
   const notes = getNotes();
   saveNotes([...notes, note]);
+};
+
+// Edit an existing note
+export const editNote = (noteId: string, content: string): boolean => {
+  try {
+    const notes = getNotes();
+    const noteIndex = notes.findIndex(note => note.id === noteId);
+    
+    if (noteIndex === -1) {
+      toast({
+        title: "Error",
+        description: "Note not found",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    // Update content and updatedAt timestamp
+    const updatedNote = {
+      ...notes[noteIndex],
+      content,
+      updatedAt: new Date().toISOString()
+    };
+    
+    notes[noteIndex] = updatedNote;
+    saveNotes(notes);
+    return true;
+  } catch (error) {
+    console.error("Error editing note:", error);
+    toast({
+      title: "Error",
+      description: "Failed to edit note",
+      variant: "destructive"
+    });
+    return false;
+  }
+};
+
+// Delete a note
+export const deleteNote = (noteId: string): boolean => {
+  try {
+    const notes = getNotes();
+    const filteredNotes = notes.filter(note => note.id !== noteId);
+    
+    if (filteredNotes.length === notes.length) {
+      toast({
+        title: "Error",
+        description: "Note not found",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    saveNotes(filteredNotes);
+    return true;
+  } catch (error) {
+    console.error("Error deleting note:", error);
+    toast({
+      title: "Error",
+      description: "Failed to delete note",
+      variant: "destructive"
+    });
+    return false;
+  }
 };
 
 // Generate a random color

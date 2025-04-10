@@ -1,0 +1,77 @@
+
+/* Note actions styling */
+.notes-item {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notes-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.notes-item-selected {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.notes-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.notes-item-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.notes-item-actions:hover {
+  opacity: 1;
+}
+
+.notes-action-btn {
+  padding: 4px;
+  border-radius: 4px;
+  color: hsl(var(--notes-dark-text));
+}
+
+.notes-action-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.notes-delete-btn:hover {
+  color: hsl(var(--destructive));
+}
+
+.notes-item-edit {
+  margin-top: 8px;
+}
+
+.notes-edit-textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 8px;
+  border: 1px solid hsl(var(--notes-border));
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.notes-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.notes-edit-cancel {
+  color: hsl(var(--destructive));
+}
+
+.notes-edit-save {
+  color: hsl(var(--notes-accent));
+}

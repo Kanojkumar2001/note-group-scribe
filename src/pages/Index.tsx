@@ -1,5 +1,6 @@
 
 import NoteApp from "../components/NoteApp";
+import "../styles/index"; // Import styles
 
 const Index = () => {
   return (

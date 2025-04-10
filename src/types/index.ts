@@ -13,3 +13,9 @@ export interface Group {
   name: string;
   color: string;
 }
+
+export interface NoteActionProps {
+  note: Note;
+  onEdit: (noteId: string, content: string) => void;
+  onDelete: (noteId: string) => void;
+}

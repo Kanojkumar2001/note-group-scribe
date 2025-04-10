@@ -1,12 +1,21 @@
 
 import { Note } from "../types";
+import NoteActions from "./NoteActions";
+import { editNote, deleteNote } from "../utils/storage";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface NoteContentProps {
   notes: Note[];
   groupName: string | null;
+  onNoteEdited: (noteId: string, content: string) => void;
+  onNoteDeleted: (noteId: string) => void;
 }
 
-const NoteContent = ({ notes, groupName }: NoteContentProps) => {
+const NoteContent = ({ notes, groupName, onNoteEdited, onNoteDeleted }: NoteContentProps) => {
+  const { toast } = useToast();
+  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
+
   // Format date to a readable string
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -26,6 +35,30 @@ const NoteContent = ({ notes, groupName }: NoteContentProps) => {
     const dateStr = `${day} ${month} ${year}`;
     
     return `${timeString}, ${dateStr}`;
+  };
+
+  // Handle note edit
+  const handleNoteEdit = (noteId: string, content: string) => {
+    const success = editNote(noteId, content);
+    if (success) {
+      onNoteEdited(noteId, content);
+      toast({
+        title: "Success",
+        description: "Note updated successfully",
+      });
+    }
+  };
+
+  // Handle note deletion
+  const handleNoteDelete = (noteId: string) => {
+    const success = deleteNote(noteId);
+    if (success) {
+      onNoteDeleted(noteId);
+      toast({
+        title: "Success",
+        description: "Note deleted successfully",
+      });
+    }
   };
 
   // If no group is selected
@@ -87,9 +120,22 @@ const NoteContent = ({ notes, groupName }: NoteContentProps) => {
           </div>
         ) : (
           notes.map((note) => (
-            <div key={note.id} className="notes-item">
+            <div 
+              key={note.id} 
+              className={`notes-item ${selectedNoteId === note.id ? 'notes-item-selected' : ''}`}
+              onClick={() => setSelectedNoteId(selectedNoteId === note.id ? null : note.id)}
+            >
               <div className="notes-item-content">{note.content}</div>
-              <div className="notes-item-date">{formatDate(note.updatedAt)}</div>
+              <div className="notes-item-footer">
+                <div className="notes-item-date">{formatDate(note.updatedAt)}</div>
+                {selectedNoteId === note.id && (
+                  <NoteActions
+                    note={note}
+                    onEdit={handleNoteEdit}
+                    onDelete={handleNoteDelete}
+                  />
+                )}
+              </div>
             </div>
           ))
         )}
